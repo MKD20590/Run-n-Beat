@@ -63,7 +63,7 @@ public class Character : MonoBehaviour
 
 
         //raycast for grounding
-        Ray ray = new Ray(transform.position, -Vector3.up);
+        Ray ray = new Ray(transform.position, Vector3.down);
         //Debug.DrawRay(transform.position, Vector3.down, Color.red);
         if(Physics.Raycast(ray,out hit))
         {
