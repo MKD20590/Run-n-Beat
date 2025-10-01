@@ -1,21 +1,21 @@
-<!-- <table>
+<table>
   <tr>
     <td align="left" width="50%">
-      <img width="100%" alt="gif1" src="https://github.com/user-attachments/assets/a01eef8e-4281-4a45-ba5e-da38af4e47fb">
+      <img width="100%" alt="gif1" src="https://github.com/user-attachments/assets/a2c9a666-3157-4934-b50b-635745b3dcd6">
     </td>
     <td align="right" width="50%">
-      <img width="100%" alt="gif2" src="https://github.com/user-attachments/assets/043480aa-02ab-44d8-bcd9-1589c8b40121">
+      <img width="100%" alt="gif2" src="https://github.com/user-attachments/assets/acb6f147-6641-470a-be41-a17fd20d5a09">
     </td>
   </tr>
 </table>
 
 <p align="center">
-  <img width="100%" alt="gif3" src="https://github.com/user-attachments/assets/2882e5c3-3b05-4ca6-8a0e-6f1ca2bb0c76">
-</p> -->
+  <img width="100%" alt="gif3" src="https://github.com/user-attachments/assets/4ead64f7-5e86-4486-a240-073cb6557bc7">
+</p>
 
 ##  📜Scripts and Features
 
-You are able to do many stuff in the game like running, dashing, jumping, and double-jumping so much more thanks to tons of scripting has been implemented to the game
+You are able to run, dash, jump, and double-jump thanks to the scripts below
 
 |  Script       | Description                                                  |
 | ------------------- | ------------------------------------------------------------ |
