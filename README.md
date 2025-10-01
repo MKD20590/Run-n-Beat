@@ -15,7 +15,7 @@
 
 ##  📜Scripts and Features
 
-You are able to do so many stuff in the game like walking, running, building, crafting, shooting, hunting, and so much more thanks to tons of scripting has been implemented to the game
+You are able to do many stuff in the game like running, dashing, jumping, and double-jumping so much more thanks to tons of scripting has been implemented to the game
 
 |  Script       | Description                                                  |
 | ------------------- | ------------------------------------------------------------ |
