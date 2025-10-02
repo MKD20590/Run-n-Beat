@@ -19,11 +19,9 @@ You are able to run, dash, jump, and double-jump thanks to the scripts below
 
 |  Script       | Description                                                  |
 | ------------------- | ------------------------------------------------------------ |
-| `InventoryManager.cs` | Responsible for all the inventory things in game like drag and drop, hotbar, etc |
-| `ItemScriptableObject.cs` | Responsible for all the items data in Sive2 for example wood, guns, stone, etc |
-| `Weapon.cs`  | Responsible for all in game weapon including melee weapon, controlling reload, swing, etc |
-| `BuildingHandler.cs`  | Responsible for the building system in game using socket system |
-| `CraftingManager.cs`  | Responsible for all the items required and crafting system working in game|
+| `Character.cs` | Responsible for all the player's control |
+| `GameManager.cs` | Responsible for pause system and determine the winning / losing condition |
+| `Boss.cs`  | Responsible for spawning the obstacles (as an abstract class) |
 | `etc`  | |
 
 <br>
@@ -43,13 +41,13 @@ Run n Beat is a 3D rhythm platformer game where you can try and play a level to 
 ## 📂Files description
 
 ```
-├── run n beat                        # Contains everything needed for Run n Beat to work.
+├── Run n Beat                        # Contains everything needed for Run n Beat to work.
    ├── Assets                         # Contains every assets that are integrated with unity to create the game, like the scripts and the art.
       ├── Animations                  # Contains every animation clip and animator controller that is used for the game.
       ├── Fonts                       # Contains every fonts used to the display the text in the game.
       ├── Images                      # Contains all the game art like the sprites used for the game.
-      ├── Materials&Shaders           # Contains the materials and shader graphs needed for the 3D models in the game.
-      ├── Music&Sounds                # Contains every sound used for the game like music and sound effects.
+      ├── Materials & Shaders         # Contains the materials and shader graphs needed for the 3D models in the game.
+      ├── Music & Sounds              # Contains every sound used for the game like music and sound effects.
       ├── Scripts                     # Contains all scripts needed to make the gane get goings like PlayerMovement scripts.
       ├── Prefabs                     # Contains every reusable game object that will be instantiated in the game scene.
       ├── Scenes                      # Contains all scenes that exist in the game for it to interconnected with each other like MainMenu, Gameplay, etc
