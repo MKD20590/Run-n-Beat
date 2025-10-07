@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class pauseMenu : MonoBehaviour
+public class PauseMenu : MonoBehaviour
 {
-    [SerializeField] private AudioSource bg;
+    [SerializeField] private GameManager gm;
+    [SerializeField] private AudioSource bgm;
     // Start is called before the first frame update
     void Start()
     {
-        
+        gm = FindObjectOfType<GameManager>();
     }
 
     // Update is called once per frame
@@ -16,9 +17,9 @@ public class pauseMenu : MonoBehaviour
     {
         
     }
-    public void unPaused()
+    public void UnPaused()
     {
-        bg.UnPause();
+        bgm.UnPause();
         Time.timeScale = 1;
     }
 }

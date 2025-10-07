@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class lasers : MonoBehaviour
+public class Lasers : MonoBehaviour
 {
     [SerializeField] private ParticleSystem particle;
     // Start is called before the first frame update

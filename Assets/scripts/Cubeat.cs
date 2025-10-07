@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 
-public class Cubeat : MonoBehaviour
+public class Cubeat : Boss
 {
     [SerializeField] private CinemachineVirtualCamera cam1;
     [SerializeField] private Vector3 cam;
@@ -72,7 +72,7 @@ public class Cubeat : MonoBehaviour
         leftSpeakerDown.transform.localScale = Vector3.Lerp(leftSpeakerDown.transform.localScale, startSizeLD, Time.deltaTime * 2f);
     }
 
-    public void normalPulsing()
+    public void NormalPulsing()
     {
         if (count <= 14 && !gm.died)
         {
@@ -130,7 +130,7 @@ public class Cubeat : MonoBehaviour
         }
 
     }
-    public void pulsing()
+    public void Pulsing()
     {
         count++;
         if(count>15 && !gm.died)
@@ -146,13 +146,8 @@ public class Cubeat : MonoBehaviour
 
     }
 
-    public void spikeAttack()
+    public void SpikeAttack()
     {
-        //Debug.Log("1: " + spike1);
-        //Debug.Log("2: " + spike2);
-        //Debug.Log("3: " + spike3);
-        //Debug.Log("4: " + spike4);
-        //Debug.Log("5: " + spike5);
         if(count==160)
         {
             cubeat.SetTrigger("defeat");
@@ -186,28 +181,11 @@ public class Cubeat : MonoBehaviour
                     spike[spike3].Play("in");
                     spike[spike4].Play("in");
                     spike[spike5].Play("in");
-/*                    spike[spike1].SetTrigger("in");
-                    spike[spike1].ResetTrigger("spike");
-                    
-                    spike[spike2].SetTrigger("in");
-                    spike[spike2].ResetTrigger("spike");
-
-                    spike[spike3].SetTrigger("in");
-                    spike[spike3].ResetTrigger("spike");
-
-                    spike[spike4].SetTrigger("in");
-                    spike[spike4].ResetTrigger("spike");
-
-                    spike[spike5].SetTrigger("in");
-                    spike[spike5].ResetTrigger("spike");*/
                 }
             }
             else
             {
-                //spike[0].Play("in_spike");
                 spike[spikeAll].Play("in_spike");
-                //spike[spikeAll].SetTrigger("spike");
-                //spike[spikeAll].ResetTrigger("in");
 
                 if (count >= 63)
                 {
@@ -216,20 +194,6 @@ public class Cubeat : MonoBehaviour
                     spike[spike3].Play("in_spike");
                     spike[spike4].Play("in_spike");
                     spike[spike5].Play("in_spike");
-/*                    spike[spike1].SetTrigger("spike");
-                    spike[spike1].ResetTrigger("in");
-
-                    spike[spike2].SetTrigger("spike");
-                    spike[spike2].ResetTrigger("in");
-
-                    spike[spike3].SetTrigger("spike");
-                    spike[spike3].ResetTrigger("in");
-
-                    spike[spike4].SetTrigger("spike");
-                    spike[spike4].ResetTrigger("in");
-
-                    spike[spike5].SetTrigger("spike");
-                    spike[spike5].ResetTrigger("in");*/
                 }
                 spikeAll = Random.Range(0, 63);
                 spike1 = Random.Range(0, 20);
@@ -241,7 +205,7 @@ public class Cubeat : MonoBehaviour
             }
         }
     }
-    public void lasers()
+    public void Lasers()
     {
         count2++;
         if (count2>=7 && !gm.died && count3<=5)

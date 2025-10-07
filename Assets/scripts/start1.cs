@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class start1 : MonoBehaviour
+public class Start1 : MonoBehaviour
 {
     //public AudioSource loop;
     public AudioSource startmsc;

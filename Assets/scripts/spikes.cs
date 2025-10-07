@@ -19,7 +19,7 @@ public class spikes : MonoBehaviour
     {
         
     }
-    public void playParticle()
+    public void PlayParticle()
     {
         particle.Play();
     }

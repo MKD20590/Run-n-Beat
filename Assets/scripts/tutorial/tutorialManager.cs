@@ -5,14 +5,14 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.Audio;
 
-public class tutorialManager : MonoBehaviour
+public class TutorialManager : MonoBehaviour
 {
     //public optionsWindow ow;
     [SerializeField] private AudioMixer bgmFX;
     //[SerializeField] private Cubeat cb;
     //[SerializeField] private AudioMixer fx;
 
-    [SerializeField] private Character chara;
+    [SerializeField] private Player player;
     [SerializeField] private Animator boss;
     [SerializeField] private Animator wl;
     [SerializeField] private Animator loading;
@@ -53,7 +53,7 @@ public class tutorialManager : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
-
+        player = FindObjectOfType<Player>();
         volumeBG = optionsWindow.volumeBG;
         volumeFX = optionsWindow.volumeFX;
         //Debug.Log(volumeBG);
@@ -83,13 +83,13 @@ public class tutorialManager : MonoBehaviour
         }
 
         //pause
-        if (Input.GetKeyDown(KeyCode.Escape) && chara.hp > 0 && !win && !died && loading.GetCurrentAnimatorStateInfo(0).IsName("stay_out"))
+        if (Input.GetKeyDown(KeyCode.Escape) && player.hp > 0 && !win && !died && loading.GetCurrentAnimatorStateInfo(0).IsName("stay_out"))
         {
             Pause();
         }
 
         //UI buttons navigation with keyboard
-        if (Input.GetMouseButtonDown(0) && paused && !selected && chara.hp > 0)
+        if (Input.GetMouseButtonDown(0) && paused && !selected && player.hp > 0)
         {
             EventSystem.current.SetSelectedGameObject(Continue);
         }
@@ -113,11 +113,11 @@ public class tutorialManager : MonoBehaviour
         }
 
         //winning and grading
-        if (chara.hp < 3)
+        if (player.hp < 3)
         {
             fullHP = false;
         }
-        if (chara.totalDoubleJ >= 10)
+        if (player.totalDoubleJ >= 10)
         {
             doubleJLessThan10 = false;
         }

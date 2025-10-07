@@ -7,12 +7,10 @@ using UnityEngine.Audio;
 
 public class optionsWindow : MonoBehaviour
 {
-    [SerializeField] private AudioMixer bgFX;
     //[SerializeField] private AudioMixer fx;
-    [SerializeField] private Slider bg1;
-    [SerializeField] private Slider fx1;
-    //[SerializeField] private GameObject bg2;
-    //[SerializeField] private GameObject fx2;
+    [SerializeField] private Slider bgmSlider;
+    [SerializeField] private Slider sfxSlider;
+    [SerializeField] private AudioMixer audioMixer;
 
     [SerializeField] private Animator options;
     [SerializeField] private Animator startScreen;
@@ -23,7 +21,7 @@ public class optionsWindow : MonoBehaviour
 
     [SerializeField] private GameObject ctrl;
     [SerializeField] private GameObject reset;
-    public MainMenu mm;
+    public MainMenuManager mm;
     bool control = false;
     bool selected = false;
 
@@ -33,24 +31,36 @@ public class optionsWindow : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
-        if(appOpened)
+        mm = FindObjectOfType<MainMenuManager>();
+        if (appOpened)
         {
-            if(bg1.value == 1)
+            if(bgmSlider.value == 1)
             {
-                bg1.value = volumeBG + 1;
+                bgmSlider.value = volumeBG + 1;
             }
-            if (fx1.value == 1)
+            if (sfxSlider.value == 1)
             {
-                fx1.value = volumeFX + 1;
+                sfxSlider.value = volumeFX + 1;
             }
         }
         else
         {
             appOpened = true;
-            if (PlayerPrefs.HasKey("volumeBG") && PlayerPrefs.HasKey("volumeFX"))
+            if (!PlayerPrefs.HasKey("bgm") || !PlayerPrefs.HasKey("sfx"))
             {
-                bg1.value = PlayerPrefs.GetFloat("volumeBG")+1;
-                fx1.value = PlayerPrefs.GetFloat("volumeFX")+1;
+                PlayerPrefs.SetFloat("bgm", 1f);
+                PlayerPrefs.SetFloat("sfx", 1f);
+                bgmSlider.value = 1;
+                sfxSlider.value = 1;
+                audioMixer.SetFloat("bgm", PlayerPrefs.GetFloat("bgm"));
+                audioMixer.SetFloat("sfx", PlayerPrefs.GetFloat("sfx"));
+            }
+            else
+            {
+                bgmSlider.value = PlayerPrefs.GetFloat("bgm");
+                sfxSlider.value = PlayerPrefs.GetFloat("sfx");
+                audioMixer.SetFloat("bgm", PlayerPrefs.GetFloat("bgm"));
+                audioMixer.SetFloat("sfx", PlayerPrefs.GetFloat("sfx"));
             }
         }
 
@@ -63,20 +73,26 @@ public class optionsWindow : MonoBehaviour
             volumeBG = GameManager.volumeBG;
             volumeFX = GameManager.volumeFX;
         }
-        //Debug.Log(volumeBG);
-        //DontDestroyOnLoad(bg1);
-        //DontDestroyOnLoad(fx1);
     }
 
     
     // Update is called once per frame
     void Update()
     {
-        volumeBG = bg1.value-1;
-        volumeFX = fx1.value-1;
-        
-        bgFX.SetFloat("bgm", volumeBG);
-        bgFX.SetFloat("fx", volumeFX);
+        //audio controls
+        if (PlayerPrefs.HasKey("bgm") && PlayerPrefs.HasKey("sfx"))
+        {
+            PlayerPrefs.SetFloat("bgm", bgmSlider.value);
+            PlayerPrefs.SetFloat("sfx", sfxSlider.value);
+            audioMixer.SetFloat("bgm", Mathf.Log10(PlayerPrefs.GetFloat("bgm")) * 20);
+            audioMixer.SetFloat("sfx", Mathf.Log10(PlayerPrefs.GetFloat("sfx")) * 20);
+        }
+        else
+        {
+            audioMixer.SetFloat("bgm", Mathf.Log10(bgmSlider.value) * 20);
+            audioMixer.SetFloat("sfx", Mathf.Log10(sfxSlider.value) * 20);
+        }
+
         if (Input.GetMouseButtonDown(0) && mm.option==true && !selected)
         {
             EventSystem.current.SetSelectedGameObject(ctrl);
@@ -93,7 +109,7 @@ public class optionsWindow : MonoBehaviour
             }
 
         }
-        else if(Input.GetKeyDown(KeyCode.Escape))
+        else if(Input.GetKeyDown(KeyCode.Escape) && mm.option)
         {
             mm.option = false;
             startScreen.enabled = true;

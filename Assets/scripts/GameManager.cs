@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     //[SerializeField] private Cubeat cb;
     //[SerializeField] private AudioMixer fx;
 
-    [SerializeField] private Character chara;
+    [SerializeField] private Player player;
     [SerializeField] private Animator boss;
     [SerializeField] private Animator wl;
     [SerializeField] private Animator loading;
@@ -22,9 +22,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Animator full;
     [SerializeField] private Animator doubleJLess;
 
-    [SerializeField] private GameObject Continue;
-    [SerializeField] private GameObject Restart;
-    [SerializeField] private GameObject Title;
+    [SerializeField] private GameObject continueButton;
+    [SerializeField] private GameObject restartButton;
+    [SerializeField] private GameObject titleButton;
 
     [SerializeField] private GameObject next;
     [SerializeField] private GameObject title1;
@@ -35,25 +35,23 @@ public class GameManager : MonoBehaviour
 
     public bool win = false;
     bool winCount = false;
-    public bool load = true;
 
     bool fullHP = true;
-    bool doubleJLessThan10 = true;
+    bool doubleJumpLessThan10 = true;
 
-    bool paused = false;
+    public bool isPaused = false;
     bool selected = false;
 
     public bool died = false;
     bool dieCount = false;
     bool res = false;
     bool menu = false;
-    bool bgPlay = false;
     public static float volumeBG = 1;
     public static float volumeFX = 1;
     // Start is called before the first frame update
     private void Awake()
     {
-
+        player = FindObjectOfType<Player>();
         volumeBG = optionsWindow.volumeBG;
         volumeFX = optionsWindow.volumeFX;
         //Debug.Log(volumeBG);
@@ -71,27 +69,17 @@ public class GameManager : MonoBehaviour
     {
         bgmFX.SetFloat("bgm", volumeBG);
         bgmFX.SetFloat("fx", volumeFX);
-        if (loading.GetCurrentAnimatorStateInfo(0).IsName("stay_out") && !bgPlay) //check if the loading animation named "stay_out" is playing
-        {
-            bg.Play();
-            load = false;
-            bgPlay = true;
-        }
-        if (pause.GetCurrentAnimatorStateInfo(0).IsName("stay_out")) //check if the pause animation named "stay_out" is playing
-        {
-            bg.UnPause();
-        }
 
         //pause
-        if (Input.GetKeyDown(KeyCode.Escape) && chara.hp > 0 && !win && !died && loading.GetCurrentAnimatorStateInfo(0).IsName("stay_out"))
+        if (Input.GetKeyDown(KeyCode.Escape) && player.hp > 0 && !win && !died)
         {
             Pause();
         }
 
         //UI buttons navigation with keyboard
-        if (Input.GetMouseButtonDown(0) && paused && !selected && chara.hp > 0)
+        if (Input.GetMouseButtonDown(0) && isPaused && !selected && player.hp > 0)
         {
-            EventSystem.current.SetSelectedGameObject(Continue);
+            EventSystem.current.SetSelectedGameObject(continueButton);
         }
         else if (Input.GetMouseButtonDown(0) && !selected && win)
         {
@@ -101,14 +89,8 @@ public class GameManager : MonoBehaviour
         {
             EventSystem.current.SetSelectedGameObject(retry);
         }
-
-        //Debug.Log(bg.clip.length);
-        //Debug.Log(bg.time);
-
-
-
-        //lose, character died
-        if (chara.hp <= 0)
+        //lose, playercter died
+        if (player.hp <= 0)
         {
             if(!dieCount)
             {
@@ -118,8 +100,6 @@ public class GameManager : MonoBehaviour
             died = true;
             wl.SetTrigger("in_lose");
             wl.ResetTrigger("in_win");
-            //wl.ResetTrigger("out_win");
-            //wl.ResetTrigger("out_lose");
         }
 
 
@@ -130,18 +110,18 @@ public class GameManager : MonoBehaviour
         }
 
         //winning and grading
-        if(chara.hp<3)
+        if(player.hp<3)
         {
             fullHP = false;
         }
-        if(chara.totalDoubleJ>=10)
+        if(player.totalDoubleJ>=10)
         {
-            doubleJLessThan10 = false;
+            doubleJumpLessThan10 = false;
         }
         if(win && winCount && wl.GetCurrentAnimatorStateInfo(0).IsName("stay_in_win"))
         {
             clear.SetTrigger("beatCleared");
-            StartCoroutine(countdown());
+            StartCoroutine(Countdown());
         }
         if (bg.time>=bg.clip.length-2 || boss.GetCurrentAnimatorStateInfo(0).IsName("stayDefeat"))
         {
@@ -156,62 +136,61 @@ public class GameManager : MonoBehaviour
     }
     public void Pause()
     {
-        if(!paused && pause.GetCurrentAnimatorStateInfo(0).IsName("stay_out"))
+        if(!isPaused)
         {
+            isPaused = true;
             bg.Pause();
-            if (UnityEngine.EventSystems.EventSystem.current.alreadySelecting != true)
+            if (EventSystem.current.alreadySelecting != true)
             {
-                EventSystem.current.SetSelectedGameObject(Continue);
+                EventSystem.current.SetSelectedGameObject(continueButton);
             }
             pause.SetTrigger("paused");
-            pause.ResetTrigger("unpaused");
-            paused = true;
-            bg.Pause();
+            pause.ResetTrigger("unPaused");
             Time.timeScale = 0;
         }
 
         else
         {
-            pause.SetTrigger("unpaused");
-            pause.ResetTrigger("paused");
-            paused = false;
+            pause.SetTrigger("unPaused");
+            pause.ResetTrigger("isPpaused");
+            isPaused = false;
         }
     }
 
-    public void selectC()
+    public void SelectC()
     {
         selected = true;
-        EventSystem.current.SetSelectedGameObject(Continue);
+        EventSystem.current.SetSelectedGameObject(continueButton);
     }
-    public void selectR()
+    public void SelectR()
     {
         selected = true;
-        EventSystem.current.SetSelectedGameObject(Restart);
+        EventSystem.current.SetSelectedGameObject(restartButton);
     }
-    public void selectT()
+    public void SelectT()
     {
         selected = true;
-        EventSystem.current.SetSelectedGameObject(Title);
+        EventSystem.current.SetSelectedGameObject(titleButton);
     }
     public void Unselect()
     {
         selected = false;
     }
 
-    public void restart()
+    public void Restart()
     {
         loading.SetTrigger("in");
         res = true;
-        StartCoroutine(countdown());
+        StartCoroutine(Countdown());
     }
 
     public void BackToMenu()
     {
         loading.SetTrigger("in");
         menu = true;
-        StartCoroutine(countdown());
+        StartCoroutine(Countdown());
     }
-    IEnumerator countdown()
+    IEnumerator Countdown()
     {
         if(winCount)
         {
@@ -221,7 +200,7 @@ public class GameManager : MonoBehaviour
                 yield return new WaitForSeconds(1f);
                 full.SetTrigger("fullHP");
             }
-            if (doubleJLessThan10)
+            if (doubleJumpLessThan10)
             {
                 yield return new WaitForSeconds(1f);
                 doubleJLess.SetTrigger("doubleJLess10");
@@ -243,23 +222,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void selectNext()
+    public void SelectNext()
     {
         selected = true;
         EventSystem.current.SetSelectedGameObject(next);
     }
-    public void selectTitle1()
+    public void SelectTitle1()
     {
         selected = true;
         EventSystem.current.SetSelectedGameObject(title1);
     }
 
-    public void selectRet()
+    public void SelectRet()
     {
         selected = true;
         EventSystem.current.SetSelectedGameObject(retry);
     }
-    public void selectTitle2()
+    public void SelectTitle2()
     {
         selected = true;
         EventSystem.current.SetSelectedGameObject(title2);

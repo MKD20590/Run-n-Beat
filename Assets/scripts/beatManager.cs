@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class beatManager : MonoBehaviour
+public class BeatManager : MonoBehaviour
 {
     [SerializeField] private float bpm;
     [SerializeField] private AudioSource bgm;
