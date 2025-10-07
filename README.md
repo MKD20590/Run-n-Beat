@@ -19,9 +19,9 @@ You are able to run, dash, jump, and double-jump thanks to the scripts below
 
 |  Script       | Description                                                  |
 | ------------------- | ------------------------------------------------------------ |
-| `Character.cs` | Responsible for all the player's control |
+| `Player.cs` | Responsible for all the player's control |
 | `GameManager.cs` | Responsible for pause system and determine the winning / losing condition |
-| `Boss.cs`  | Responsible for spawning the obstacles (as an abstract class) |
+| `Boss.cs`  | Responsible for spawning the obstacles |
 | `etc`  | |
 
 <br>
