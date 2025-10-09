@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    //[SerializeField] private PhysicMaterial slippery;
     [SerializeField] private Rigidbody rig;
     [SerializeField] private Animator shield;
     [SerializeField] private Animator body;
@@ -13,8 +12,6 @@ public class Player : MonoBehaviour
 
     [SerializeField] private GameObject ground;
     [SerializeField] private Material player_material;
-    //private Material faces;
-    //public Collider hurt_coll;
     RaycastHit hit;
     float height;
 
@@ -27,17 +24,17 @@ public class Player : MonoBehaviour
     public int hp = 3;
     int jumped = 0;
 
-    public int totalDoubleJ = 0;
+    public int totalDoubleJumps = 0;
 
     float jump = 7f;
     float speed = 4f;
     float dash = 16f;
 
-    bool moved = true;
-    bool isGrounded = true;
-    bool dashed = false;
-    bool hurted = false;
-    Vector3 move;
+    [SerializeField] private bool isMoving = true;
+    [SerializeField] private bool isGrounded = true;
+    [SerializeField] private bool isDashing = false;
+    [SerializeField] private bool isHurt = false;
+    Vector3 movement;
     
     // Start is called before the first frame update
     void Start()
@@ -58,8 +55,8 @@ public class Player : MonoBehaviour
     {
         //Debug.Log(hp);
         //movement input
-        move.x = Input.GetAxis("Horizontal");
-        move.z = Input.GetAxis("Vertical");
+        movement.x = Input.GetAxis("Horizontal");
+        movement.z = Input.GetAxis("Vertical");
 
 
         //raycast for grounding
@@ -76,7 +73,7 @@ public class Player : MonoBehaviour
             body.ResetTrigger("jump1");
             body.ResetTrigger("jump2");
         }
-        else if(height<=0.55 && hurted)
+        else if(height<=0.55 && isHurt)
         {
             isGrounded = true;
         }
@@ -89,50 +86,51 @@ public class Player : MonoBehaviour
         body.SetBool("isGrounded", isGrounded);
         
         //movement
-        if (move != Vector3.zero && !dashed && moved && !gm.died && !gm.win && !gm.isPaused)
+        if (movement != Vector3.zero && !isDashing && isMoving && !gm.isDied && !gm.win && !gm.isPaused)
         {
-            rig.velocity = new Vector3(move.x * speed, rig.velocity.y, move.z * speed);
+            rig.velocity = new Vector3(movement.x * speed, rig.velocity.y, movement.z * speed);
             body.SetBool("iswalking", true);
         }
-        else if(move == Vector3.zero)
+        else if(movement == Vector3.zero)
         {
             body.SetBool("iswalking", false);
         }
 
         //jumping
-        if(!gm.isPaused && Input.GetKeyDown(KeyCode.Space) && jumped < 2 && !gm.died && !gm.win)
+        if(!gm.isPaused && Input.GetKeyDown(KeyCode.Space) && jumped < 2 && !gm.isDied && !gm.win)
         {
             jumped++;
-            if(jumped==1 && isGrounded)
+            if(jumped == 1 && isGrounded)
             {
-                //Debug.Log("kikuk");
                 body.SetTrigger("jump1");
                 body.ResetTrigger("jump2");
             }
             else if(jumped==2)
             {
-                totalDoubleJ++;
+                totalDoubleJumps++;
                 body.ResetTrigger("jump1");
                 body.SetTrigger("jump2");
             }
-            rig.velocity = new Vector3(move.x * speed, jump, move.z * speed);
+            rig.velocity = new Vector3(movement.x * speed, jump, movement.z * speed);
             jumps.Play();
         }
 
         //dashing
-        if(!gm.isPaused && !gm.died && !gm.win && !hurted && move != Vector3.zero && Input.GetKeyDown(KeyCode.LeftShift) || !gm.isPaused && Input.GetKeyDown(KeyCode.RightShift) && !dashed && !hurted && !gm.died && !gm.win)
+        if(!gm.isPaused && !gm.isDied && !gm.win && !isHurt && movement != Vector3.zero && Input.GetKeyDown(KeyCode.LeftShift)
+            ||
+            !gm.isPaused && !gm.isDied && !gm.win && !isHurt && movement != Vector3.zero && Input.GetKeyDown(KeyCode.RightShift))
         {
             trail.emitting = true;
-            moved = false;
+            isMoving = false;
             dashes.Play();
-            dashed = true;
-            StartCoroutine(Game());
+            isDashing = true;
+            StartCoroutine(DashOrHurt());
         }
 
         //player rotation
-        if(!gm.isPaused && move != Vector3.zero && !gm.died && !gm.win)
+        if(!gm.isPaused && movement != Vector3.zero && !gm.isDied && !gm.win)
         {
-            Vector3 rotation = move * speed;
+            Vector3 rotation = movement * speed;
             rotation.y = 0f;
             rotation.Normalize();
             Quaternion rotate = Quaternion.LookRotation(rotation, Vector3.up);
@@ -142,53 +140,49 @@ public class Player : MonoBehaviour
         //winning
         if(gm.win)
         {
-            move = Vector3.zero;
+            movement = Vector3.zero;
         }
     }
-    IEnumerator Game()
+    IEnumerator DashOrHurt()
     {
         //dashing
-        if (dashed)
+        if (isDashing)
         {
             body.SetTrigger("dash");
             body.ResetTrigger("jump1");
             body.ResetTrigger("jump2");
-            rig.velocity = new Vector3(move.x * dash, rig.velocity.y, move.z * dash);
-            //main_coll.material = slippery;
+            rig.velocity = new Vector3(movement.x * dash, rig.velocity.y, movement.z * dash);
             yield return new WaitForSeconds(0.15f);
-            rig.velocity = new Vector3(move.x * speed, rig.velocity.y, move.z * speed);
+            rig.velocity = new Vector3(movement.x * speed, rig.velocity.y, movement.z * speed);
             yield return new WaitForSeconds(0.35f);
-            //main_coll.material = null;
             trail.emitting = false;
-            moved = true;
-            dashed = false;
+            isMoving = true;
+            isDashing = false;
         }
 
         //hurt
-        if(hurted)
+        if(isHurt)
         {
             main_coll.enabled = false;
             yield return new WaitForSeconds(0.3f);
             player_material.SetColor("_EmissionColor", Color.white * 2.5f);
-            moved = true;
+            isMoving = true;
 
             yield return new WaitForSeconds(2f);
-            hurted = false;
+            isHurt = false;
             if(hp>0)
             {
                 main_coll.enabled = true;
                 body.SetBool("hurt", false);
                 shield.ResetTrigger("hurt");
                 shield.SetTrigger("continue");
-
             }
-
         }
     }
     private void OnTriggerEnter(Collider collision)
     {
         //laser collision
-        if (collision.gameObject.tag == "obstacle" && !hurted && !gm.win && !gm.died && !gm.isPaused)
+        if (collision.gameObject.tag == "obstacle" && !isHurt && !gm.win && !gm.isDied && !gm.isPaused)
         {
             hp--;
             player_material.SetColor("_EmissionColor", Color.red * 2.5f);
@@ -203,28 +197,28 @@ public class Player : MonoBehaviour
             }
             body.SetBool("hurt", true);
 
-            moved = false;
+            isMoving = false;
 
             //knockback effect
             Vector3 laser = this.transform.position - collision.transform.position;
             laser.y = 2.5f;
             rig.AddForce(laser.normalized * 3.5f, ForceMode.Impulse);
-            hurted = true;
+            isHurt = true;
             hurt.Play();
-            StartCoroutine(Game());
+            StartCoroutine(DashOrHurt());
         }
     }
     private void OnCollisionEnter(Collision collision)
     {
         //is grounded, reset jumped
-        if (isGrounded && collision.gameObject.tag == "ground" && !gm.win && !gm.died && !gm.isPaused)
+        if (isGrounded && collision.gameObject.tag == "ground" && !gm.win && !gm.isDied && !gm.isPaused)
         {
             if (body.GetCurrentAnimatorStateInfo(0).IsName("onAir"))
                 jumped = 0;
         }
 
         //spike collision
-        if (collision.gameObject.tag == "obstacle" && !hurted && !gm.win && !gm.died && !gm.isPaused)
+        if (collision.gameObject.tag == "obstacle" && !isHurt && !gm.win && !gm.isDied && !gm.isPaused)
         {
             hp--;
             player_material.SetColor("_EmissionColor", Color.red * 2.5f);
@@ -240,42 +234,15 @@ public class Player : MonoBehaviour
 
             body.SetBool("hurt",true);
 
-            moved = false;
+            isMoving = false;
 
             //knockback effect
             Vector3 spike = this.transform.position - collision.transform.position;
             spike.y = 1.5f;
             rig.AddForce(spike * 3f, ForceMode.Impulse);
-            hurted = true;
+            isHurt = true;
             hurt.Play();
-            StartCoroutine(Game());
+            StartCoroutine(DashOrHurt());
         }
-
-        //laser collision
-        /*else if (collision.gameObject.tag == "laser" && !hurted && !gm.win && !gm.died && !gm.load)
-        {
-            hp--;
-            player_material.SetColor("_EmissionColor", Color.red * 2.5f);
-            if(hp>0)
-            {
-                shield.ResetTrigger("continue");
-                shield.SetTrigger("hurt");
-            }
-            else
-            {
-                body.SetTrigger("died");
-            }
-            body.SetBool("hurt", true);
-
-            moved = false;
-
-            //knockback effect
-            Vector3 laser = this.transform.position - collision.transform.position;
-            laser.y = 2.5f;
-            rig.AddForce(laser.normalized * 3.5f, ForceMode.Impulse);
-            hurted = true;
-            hurt.Play();
-            StartCoroutine(game());
-        }*/ 
     }
 }

@@ -9,12 +9,6 @@ public class BeatManager : MonoBehaviour
     [SerializeField] private AudioSource bgm;
     [SerializeField] private Intervals[] inter; //total objects that will be triggered
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     private void Update()
     {

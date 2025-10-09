@@ -10,32 +10,26 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private AudioSource bgm;
     [SerializeField] private Animator startScreen;
     [SerializeField] private Animator load;
-    [SerializeField] private CanvasGroup loading;
+    //[SerializeField] private CanvasGroup loading;
     [SerializeField] private Animator optionsWindow;
     [SerializeField] private Button str;
     [SerializeField] private Button opt;
     [SerializeField] private Button ext;
 
-    //public static bool story = false, beats = false;
-
-    //static bool startMenu = true;
-    // Start is called before the first frame update
     [SerializeField] private GameObject strt;
     [SerializeField] private GameObject opts;
     [SerializeField] private GameObject exits;
     [SerializeField] private GameObject ctrl;
 
-    static int loadingalpha = 0;
-    //public static int volumeBG;
-    //public static int volumeFX;
+    static int loadingAlpha = 0;
+
     bool started = false;
     bool selected = false;
-    public bool option = false;
+    public bool isOptionPanelOpened = false;
     private void Awake()
     {
-        loading.alpha = loadingalpha;
+        //loading.alpha = loadingAlpha;
         Time.timeScale = 1;
-
     }
     void Start()
     {
@@ -58,15 +52,14 @@ public class MainMenuManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && !option && EventSystem.current.alreadySelecting != true && !selected)
+        //fading the background music out / in
+        if(started && AudioListener.volume > 0)
         {
-            EventSystem.current.SetSelectedGameObject(strt);
+            AudioListener.volume -= 0.01f;
         }
-
-        //fading the background music out
-        if(started && bgm.volume>0)
+        else if(!started && AudioListener.volume < 1)
         {
-            bgm.volume -= 0.01f;
+            AudioListener.volume += 0.01f;
         }
     }
 
@@ -74,7 +67,7 @@ public class MainMenuManager : MonoBehaviour
     {
         selected = false;
     }
-    public void SelectS()
+    public void SelectStart()
     {
         selected = true;
         if (EventSystem.current.alreadySelecting != true)
@@ -86,18 +79,16 @@ public class MainMenuManager : MonoBehaviour
         startScreen.SetBool("selectExit", false);
     }
 
-   public void ClickedS()
+   public void StartGame()
     {
         started = true;
-        loading.alpha = 1;
-        load.SetTrigger("in");
-        //start1.SetTrigger("clicked");
-        //startScreen.SetTrigger("in");
+        //loading.alpha = 1;
+        load.SetBool("in",true);
         StartCoroutine(CountDown());
     }
 
 
-    public void SelectO()
+    public void SelectOptions()
     {
         selected = true;
         if (EventSystem.current.alreadySelecting != true)
@@ -109,9 +100,9 @@ public class MainMenuManager : MonoBehaviour
         startScreen.SetBool("selectExit", false);
     }
 
-    public void ClickedO()
+    public void Options()
     {
-        option = true;
+        isOptionPanelOpened = true;
         str.interactable = false;
         opt.interactable = false;
         ext.interactable = false;
@@ -128,7 +119,7 @@ public class MainMenuManager : MonoBehaviour
         optionsWindow.ResetTrigger("outCtrl");
     }
 
-    public void SelectE()
+    public void SelectExit()
     {
         selected = true;
         if (EventSystem.current.alreadySelecting != true) 
@@ -141,22 +132,14 @@ public class MainMenuManager : MonoBehaviour
         startScreen.SetBool("selectExit", true);
     }
 
-    public void ClickedE()
+    public void Quit()
     {
-        startScreen.SetBool("selectStart", false);
-        startScreen.SetBool("selectOptions", false);
-        startScreen.SetBool("selectExit", true);
-        //startScreen.SetTrigger("exited");
-    }
-    public void Quit1()
-    {
-
         Application.Quit();
     }
     IEnumerator CountDown()
     {
-        loadingalpha = 1;
-        loading.alpha = loadingalpha;
+        loadingAlpha = 1;
+        //loading.alpha = loadingAlpha;
         yield return new WaitForSeconds(1.5f);
         SceneManager.LoadScene(2);
     }

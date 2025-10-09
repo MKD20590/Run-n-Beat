@@ -22,56 +22,28 @@ public class optionsWindow : MonoBehaviour
     [SerializeField] private GameObject ctrl;
     [SerializeField] private GameObject reset;
     public MainMenuManager mm;
-    bool control = false;
+    bool isControlPanelOpened = false;
     bool selected = false;
 
-    public static bool appOpened = false;
-    public static float volumeBG;
-    public static float volumeFX;
     // Start is called before the first frame update
     private void Awake()
     {
         mm = FindObjectOfType<MainMenuManager>();
-        if (appOpened)
+        if (!PlayerPrefs.HasKey("bgm") || !PlayerPrefs.HasKey("sfx"))
         {
-            if(bgmSlider.value == 1)
-            {
-                bgmSlider.value = volumeBG + 1;
-            }
-            if (sfxSlider.value == 1)
-            {
-                sfxSlider.value = volumeFX + 1;
-            }
+            PlayerPrefs.SetFloat("bgm", 1f);
+            PlayerPrefs.SetFloat("sfx", 1f);
+            bgmSlider.value = 1;
+            sfxSlider.value = 1;
+            audioMixer.SetFloat("bgm", PlayerPrefs.GetFloat("bgm"));
+            audioMixer.SetFloat("sfx", PlayerPrefs.GetFloat("sfx"));
         }
         else
         {
-            appOpened = true;
-            if (!PlayerPrefs.HasKey("bgm") || !PlayerPrefs.HasKey("sfx"))
-            {
-                PlayerPrefs.SetFloat("bgm", 1f);
-                PlayerPrefs.SetFloat("sfx", 1f);
-                bgmSlider.value = 1;
-                sfxSlider.value = 1;
-                audioMixer.SetFloat("bgm", PlayerPrefs.GetFloat("bgm"));
-                audioMixer.SetFloat("sfx", PlayerPrefs.GetFloat("sfx"));
-            }
-            else
-            {
-                bgmSlider.value = PlayerPrefs.GetFloat("bgm");
-                sfxSlider.value = PlayerPrefs.GetFloat("sfx");
-                audioMixer.SetFloat("bgm", PlayerPrefs.GetFloat("bgm"));
-                audioMixer.SetFloat("sfx", PlayerPrefs.GetFloat("sfx"));
-            }
-        }
-
-
-    }
-    void Start()
-    {
-        if(GameManager.volumeBG!=volumeBG && GameManager.volumeFX!=volumeFX && GameManager.volumeBG<1 && GameManager.volumeFX<1)
-        {
-            volumeBG = GameManager.volumeBG;
-            volumeFX = GameManager.volumeFX;
+            bgmSlider.value = PlayerPrefs.GetFloat("bgm");
+            sfxSlider.value = PlayerPrefs.GetFloat("sfx");
+            audioMixer.SetFloat("bgm", PlayerPrefs.GetFloat("bgm"));
+            audioMixer.SetFloat("sfx", PlayerPrefs.GetFloat("sfx"));
         }
     }
 
@@ -93,11 +65,7 @@ public class optionsWindow : MonoBehaviour
             audioMixer.SetFloat("sfx", Mathf.Log10(sfxSlider.value) * 20);
         }
 
-        if (Input.GetMouseButtonDown(0) && mm.option==true && !selected)
-        {
-            EventSystem.current.SetSelectedGameObject(ctrl);
-        }
-        if(control)
+        if(isControlPanelOpened)
         {
             if(Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0))
             {
@@ -105,33 +73,31 @@ public class optionsWindow : MonoBehaviour
                 options.ResetTrigger("inCtrl");
                 options.ResetTrigger("in");
                 options.ResetTrigger("out");
-                control = false;
+                isControlPanelOpened = false;
             }
-
         }
-        else if(Input.GetKeyDown(KeyCode.Escape) && mm.option)
+        else if(Input.GetKeyDown(KeyCode.Escape) && mm.isOptionPanelOpened)
         {
-            mm.option = false;
+            mm.isOptionPanelOpened = false;
             startScreen.enabled = true;
             str.interactable = true;
             opt.interactable = true;
             ext.interactable = true;
-            EventSystem.current.SetSelectedGameObject(opts);
             options.SetTrigger("out");
             options.ResetTrigger("in");
             options.ResetTrigger("outCtrl");
             options.ResetTrigger("inCtrl");
         }
     }
-    public void Ctrls()
+    public void Controls()
     {
         options.SetTrigger("inCtrl");
         options.ResetTrigger("outCtrl");
         options.ResetTrigger("in");
         options.ResetTrigger("out");
-        control = true;
+        isControlPanelOpened = true;
     }
-    public void selectCtrl()
+    public void SelectCtrl()
     {
         selected = true;
         EventSystem.current.SetSelectedGameObject(ctrl);
@@ -140,14 +106,9 @@ public class optionsWindow : MonoBehaviour
     {
         selected = false;
     }
-    public void selectReset()
+    public void SelectReset()
     {
         selected = true;
         EventSystem.current.SetSelectedGameObject(reset);
-    }
-    private void OnApplicationQuit()
-    {
-        PlayerPrefs.SetFloat("volumeBG", volumeBG);
-        PlayerPrefs.SetFloat("volumeFX", volumeFX);
     }
 }

@@ -74,7 +74,7 @@ public class Cubeat : Boss
 
     public void NormalPulsing()
     {
-        if (count <= 14 && !gm.died)
+        if (count <= 14 && !gm.isDied)
         {
             if (count1 < 3)
             {
@@ -133,7 +133,7 @@ public class Cubeat : Boss
     public void Pulsing()
     {
         count++;
-        if(count>15 && !gm.died)
+        if(count>15 && !gm.isDied)
         {
             Camera.main.transform.position = new Vector3(cam.x, cam.y-0.1f, cam.z + 0.1f);
 
@@ -148,13 +148,12 @@ public class Cubeat : Boss
 
     public void SpikeAttack()
     {
-        if(count==160)
+        if(count == 160)
         {
             cubeat.SetTrigger("defeat");
         }
-        if (count > 30 && !gm.died && count <= 160)
+        if (count > 30 && !gm.isDied && count <= 160)
         {
-            //Debug.Log("pulsing");
             if (!countSpike1)
             {
                 countSpike1 = true;
@@ -162,10 +161,7 @@ public class Cubeat : Boss
                 {
                     cubeat.SetTrigger("spike1");
                 }
-                //spike[0].Play("in");
                 spike[spikeAll].Play("in");
-                //spike[spikeAll].SetTrigger("in");
-                //spike[spikeAll].ResetTrigger("spike");
 
                 if (count>=63)
                 {
@@ -208,7 +204,7 @@ public class Cubeat : Boss
     public void Lasers()
     {
         count2++;
-        if (count2>=7 && !gm.died && count3<=5)
+        if (count2>=7 && !gm.isDied && count3<=5)
         {
 
             if (count2 <= 8)
@@ -239,8 +235,6 @@ public class Cubeat : Boss
             }
 
         }
-        //Debug.Log(count3);
-        //count2++;
         if(count2>=10)
         {
             count3++;
