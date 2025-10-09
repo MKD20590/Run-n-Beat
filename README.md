@@ -31,7 +31,7 @@ You are able to run, dash, jump, and double-jump thanks to the scripts below
 <br>
 
 ## 🕹️Play Game
-Currently in development phase
+Currently finished phase (waiting for update)
 <br>
 
 ## 🔴About
