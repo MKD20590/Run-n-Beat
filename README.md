@@ -48,9 +48,9 @@ Run n Beat is a 3D rhythm platformer game where you can try and play a level to 
       ├── Images                      # Contains all the game art like the sprites used for the game.
       ├── Materials & Shaders         # Contains the materials and shader graphs needed for the 3D models in the game.
       ├── Music & Sounds              # Contains every sound used for the game like music and sound effects.
-      ├── Scripts                     # Contains all scripts needed to make the gane get goings like PlayerMovement scripts.
       ├── Prefabs                     # Contains every reusable game object that will be instantiated in the game scene.
       ├── Scenes                      # Contains all scenes that exist in the game for it to interconnected with each other like MainMenu, Gameplay, etc
+      ├── Scripts                     # Contains all scripts needed to make the gane get goings like PlayerMovement scripts.
 ```
       
 
